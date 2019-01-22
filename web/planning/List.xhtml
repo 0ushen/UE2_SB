@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPlanningTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListPlanningEmpty}" rendered="#{planningController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{planningController.items.rowCount > 0}">
+                    <h:outputText value="#{planningController.pagination.pageFirstItem + 1}..#{planningController.pagination.pageLastItem + 1}/#{planningController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{planningController.previous}" value="#{bundle.Previous} #{planningController.pagination.pageSize}" rendered="#{planningController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{planningController.next}" value="#{bundle.Next} #{planningController.pagination.pageSize}" rendered="#{planningController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{planningController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_planningId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.planningId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_room}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.room}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_seanceDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.seanceDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_startHour}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.startHour}">
+                                <f:convertDateTime pattern="HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_organizedUeId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.organizedUeId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPlanningTitle_personId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.personId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{planningController.prepareView}" value="#{bundle.ListPlanningViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{planningController.prepareEdit}" value="#{bundle.ListPlanningEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{planningController.destroy}" value="#{bundle.ListPlanningDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{planningController.prepareCreate}" value="#{bundle.ListPlanningCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListPlanningIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditPresenceTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditPresenceLabel_presenceId}" for="presenceId" />
+                    <h:inputText id="presenceId" value="#{presenceController.selected.presenceId}" title="#{bundle.EditPresenceTitle_presenceId}" required="true" requiredMessage="#{bundle.EditPresenceRequiredMessage_presenceId}"/>
+                    <h:outputLabel value="#{bundle.EditPresenceLabel_comment}" for="comment" />
+                    <h:inputText id="comment" value="#{presenceController.selected.comment}" title="#{bundle.EditPresenceTitle_comment}" />
+                    <h:outputLabel value="#{bundle.EditPresenceLabel_isPresent}" for="isPresent" />
+                    <h:inputText id="isPresent" value="#{presenceController.selected.isPresent}" title="#{bundle.EditPresenceTitle_isPresent}" />
+                    <h:outputLabel value="#{bundle.EditPresenceLabel_personId}" for="personId" />
+                    <h:selectOneMenu id="personId" value="#{presenceController.selected.personId}" title="#{bundle.EditPresenceTitle_personId}" >
+                        <f:selectItems value="#{personController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditPresenceLabel_planningId}" for="planningId" />
+                    <h:selectOneMenu id="planningId" value="#{presenceController.selected.planningId}" title="#{bundle.EditPresenceTitle_planningId}" >
+                        <f:selectItems value="#{planningController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{presenceController.update}" value="#{bundle.EditPresenceSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditPresenceViewLink}"/>
+                <br />
+                <h:commandLink action="#{presenceController.prepareList}" value="#{bundle.EditPresenceShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditPresenceIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

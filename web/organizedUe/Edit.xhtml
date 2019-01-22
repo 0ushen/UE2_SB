@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditOrganizedUeTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_organizedUeId}" for="organizedUeId" />
+                    <h:inputText id="organizedUeId" value="#{organizedUeController.selected.organizedUeId}" title="#{bundle.EditOrganizedUeTitle_organizedUeId}" required="true" requiredMessage="#{bundle.EditOrganizedUeRequiredMessage_organizedUeId}"/>
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_endDate}" for="endDate" />
+                    <h:inputText id="endDate" value="#{organizedUeController.selected.endDate}" title="#{bundle.EditOrganizedUeTitle_endDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{organizedUeController.selected.name}" title="#{bundle.EditOrganizedUeTitle_name}" />
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_startDate}" for="startDate" />
+                    <h:inputText id="startDate" value="#{organizedUeController.selected.startDate}" title="#{bundle.EditOrganizedUeTitle_startDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_levelId}" for="levelId" />
+                    <h:selectOneMenu id="levelId" value="#{organizedUeController.selected.levelId}" title="#{bundle.EditOrganizedUeTitle_levelId}" >
+                        <f:selectItems value="#{levelController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditOrganizedUeLabel_ueId}" for="ueId" />
+                    <h:selectOneMenu id="ueId" value="#{organizedUeController.selected.ueId}" title="#{bundle.EditOrganizedUeTitle_ueId}" >
+                        <f:selectItems value="#{ueController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{organizedUeController.update}" value="#{bundle.EditOrganizedUeSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditOrganizedUeViewLink}"/>
+                <br />
+                <h:commandLink action="#{organizedUeController.prepareList}" value="#{bundle.EditOrganizedUeShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditOrganizedUeIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

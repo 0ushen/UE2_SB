@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewOrganizedUeTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_organizedUeId}"/>
+                    <h:outputText value="#{organizedUeController.selected.organizedUeId}" title="#{bundle.ViewOrganizedUeTitle_organizedUeId}"/>
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_endDate}"/>
+                    <h:outputText value="#{organizedUeController.selected.endDate}" title="#{bundle.ViewOrganizedUeTitle_endDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_name}"/>
+                    <h:outputText value="#{organizedUeController.selected.name}" title="#{bundle.ViewOrganizedUeTitle_name}"/>
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_startDate}"/>
+                    <h:outputText value="#{organizedUeController.selected.startDate}" title="#{bundle.ViewOrganizedUeTitle_startDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_levelId}"/>
+                    <h:outputText value="#{organizedUeController.selected.levelId}" title="#{bundle.ViewOrganizedUeTitle_levelId}"/>
+                    <h:outputText value="#{bundle.ViewOrganizedUeLabel_ueId}"/>
+                    <h:outputText value="#{organizedUeController.selected.ueId}" title="#{bundle.ViewOrganizedUeTitle_ueId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{organizedUeController.destroyAndView}" value="#{bundle.ViewOrganizedUeDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewOrganizedUeEditLink}"/>
+                <br />
+                <h:commandLink action="#{organizedUeController.prepareCreate}" value="#{bundle.ViewOrganizedUeCreateLink}" />
+                <br />
+                <h:commandLink action="#{organizedUeController.prepareList}" value="#{bundle.ViewOrganizedUeShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewOrganizedUeIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

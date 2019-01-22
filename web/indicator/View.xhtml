@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewIndicatorTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_indicatorId}"/>
+                    <h:outputText value="#{indicatorController.selected.indicatorId}" title="#{bundle.ViewIndicatorTitle_indicatorId}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_description}"/>
+                    <h:outputText value="#{indicatorController.selected.description}" title="#{bundle.ViewIndicatorTitle_description}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_isCriteria}"/>
+                    <h:outputText value="#{indicatorController.selected.isCriteria}" title="#{bundle.ViewIndicatorTitle_isCriteria}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_maxPossible}"/>
+                    <h:outputText value="#{indicatorController.selected.maxPossible}" title="#{bundle.ViewIndicatorTitle_maxPossible}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_name}"/>
+                    <h:outputText value="#{indicatorController.selected.name}" title="#{bundle.ViewIndicatorTitle_name}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_capacityId}"/>
+                    <h:outputText value="#{indicatorController.selected.capacityId}" title="#{bundle.ViewIndicatorTitle_capacityId}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_parentIndicatorId}"/>
+                    <h:outputText value="#{indicatorController.selected.parentIndicatorId}" title="#{bundle.ViewIndicatorTitle_parentIndicatorId}"/>
+                    <h:outputText value="#{bundle.ViewIndicatorLabel_organizedUeId}"/>
+                    <h:outputText value="#{indicatorController.selected.organizedUeId}" title="#{bundle.ViewIndicatorTitle_organizedUeId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{indicatorController.destroyAndView}" value="#{bundle.ViewIndicatorDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewIndicatorEditLink}"/>
+                <br />
+                <h:commandLink action="#{indicatorController.prepareCreate}" value="#{bundle.ViewIndicatorCreateLink}" />
+                <br />
+                <h:commandLink action="#{indicatorController.prepareList}" value="#{bundle.ViewIndicatorShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewIndicatorIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

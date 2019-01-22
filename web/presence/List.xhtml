@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPresenceTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListPresenceEmpty}" rendered="#{presenceController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{presenceController.items.rowCount > 0}">
+                    <h:outputText value="#{presenceController.pagination.pageFirstItem + 1}..#{presenceController.pagination.pageLastItem + 1}/#{presenceController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{presenceController.previous}" value="#{bundle.Previous} #{presenceController.pagination.pageSize}" rendered="#{presenceController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{presenceController.next}" value="#{bundle.Next} #{presenceController.pagination.pageSize}" rendered="#{presenceController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{presenceController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPresenceTitle_presenceId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.presenceId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPresenceTitle_comment}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.comment}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPresenceTitle_isPresent}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.isPresent}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPresenceTitle_personId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.personId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPresenceTitle_planningId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.planningId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{presenceController.prepareView}" value="#{bundle.ListPresenceViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{presenceController.prepareEdit}" value="#{bundle.ListPresenceEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{presenceController.destroy}" value="#{bundle.ListPresenceDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{presenceController.prepareCreate}" value="#{bundle.ListPresenceCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListPresenceIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

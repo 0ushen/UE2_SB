@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewPlanningTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewPlanningLabel_planningId}"/>
+                    <h:outputText value="#{planningController.selected.planningId}" title="#{bundle.ViewPlanningTitle_planningId}"/>
+                    <h:outputText value="#{bundle.ViewPlanningLabel_room}"/>
+                    <h:outputText value="#{planningController.selected.room}" title="#{bundle.ViewPlanningTitle_room}"/>
+                    <h:outputText value="#{bundle.ViewPlanningLabel_seanceDate}"/>
+                    <h:outputText value="#{planningController.selected.seanceDate}" title="#{bundle.ViewPlanningTitle_seanceDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewPlanningLabel_startHour}"/>
+                    <h:outputText value="#{planningController.selected.startHour}" title="#{bundle.ViewPlanningTitle_startHour}">
+                        <f:convertDateTime pattern="HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewPlanningLabel_organizedUeId}"/>
+                    <h:outputText value="#{planningController.selected.organizedUeId}" title="#{bundle.ViewPlanningTitle_organizedUeId}"/>
+                    <h:outputText value="#{bundle.ViewPlanningLabel_personId}"/>
+                    <h:outputText value="#{planningController.selected.personId}" title="#{bundle.ViewPlanningTitle_personId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{planningController.destroyAndView}" value="#{bundle.ViewPlanningDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewPlanningEditLink}"/>
+                <br />
+                <h:commandLink action="#{planningController.prepareCreate}" value="#{bundle.ViewPlanningCreateLink}" />
+                <br />
+                <h:commandLink action="#{planningController.prepareList}" value="#{bundle.ViewPlanningShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewPlanningIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

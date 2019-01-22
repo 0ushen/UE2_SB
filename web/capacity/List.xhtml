@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListCapacityTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListCapacityEmpty}" rendered="#{capacityController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{capacityController.items.rowCount > 0}">
+                    <h:outputText value="#{capacityController.pagination.pageFirstItem + 1}..#{capacityController.pagination.pageLastItem + 1}/#{capacityController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{capacityController.previous}" value="#{bundle.Previous} #{capacityController.pagination.pageSize}" rendered="#{capacityController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{capacityController.next}" value="#{bundle.Next} #{capacityController.pagination.pageSize}" rendered="#{capacityController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{capacityController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCapacityTitle_capacityId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.capacityId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCapacityTitle_description}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.description}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCapacityTitle_isThresholdOfSuccess}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.isThresholdOfSuccess}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCapacityTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCapacityTitle_ueId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ueId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{capacityController.prepareView}" value="#{bundle.ListCapacityViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{capacityController.prepareEdit}" value="#{bundle.ListCapacityEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{capacityController.destroy}" value="#{bundle.ListCapacityDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{capacityController.prepareCreate}" value="#{bundle.ListCapacityCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListCapacityIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

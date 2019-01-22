@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListSectionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListSectionEmpty}" rendered="#{sectionController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{sectionController.items.rowCount > 0}">
+                    <h:outputText value="#{sectionController.pagination.pageFirstItem + 1}..#{sectionController.pagination.pageLastItem + 1}/#{sectionController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{sectionController.previous}" value="#{bundle.Previous} #{sectionController.pagination.pageSize}" rendered="#{sectionController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{sectionController.next}" value="#{bundle.Next} #{sectionController.pagination.pageSize}" rendered="#{sectionController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{sectionController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSectionTitle_sectionId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.sectionId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSectionTitle_description}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.description}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSectionTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSectionTitle_personId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.personId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{sectionController.prepareView}" value="#{bundle.ListSectionViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{sectionController.prepareEdit}" value="#{bundle.ListSectionEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{sectionController.destroy}" value="#{bundle.ListSectionDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{sectionController.prepareCreate}" value="#{bundle.ListSectionCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListSectionIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

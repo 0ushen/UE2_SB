@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditStudentOrganizedUeTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditStudentOrganizedUeLabel_comment}" for="comment" />
+                    <h:inputText id="comment" value="#{studentOrganizedUeController.selected.comment}" title="#{bundle.EditStudentOrganizedUeTitle_comment}" />
+                    <h:outputLabel value="#{bundle.EditStudentOrganizedUeLabel_organizedUe}" for="organizedUe" />
+                    <h:selectOneMenu id="organizedUe" value="#{studentOrganizedUeController.selected.organizedUe}" title="#{bundle.EditStudentOrganizedUeTitle_organizedUe}" required="true" requiredMessage="#{bundle.EditStudentOrganizedUeRequiredMessage_organizedUe}">
+                        <f:selectItems value="#{organizedUeController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditStudentOrganizedUeLabel_person}" for="person" />
+                    <h:selectOneMenu id="person" value="#{studentOrganizedUeController.selected.person}" title="#{bundle.EditStudentOrganizedUeTitle_person}" required="true" requiredMessage="#{bundle.EditStudentOrganizedUeRequiredMessage_person}">
+                        <f:selectItems value="#{personController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{studentOrganizedUeController.update}" value="#{bundle.EditStudentOrganizedUeSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditStudentOrganizedUeViewLink}"/>
+                <br />
+                <h:commandLink action="#{studentOrganizedUeController.prepareList}" value="#{bundle.EditStudentOrganizedUeShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditStudentOrganizedUeIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

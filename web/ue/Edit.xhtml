@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditUeTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditUeLabel_ueId}" for="ueId" />
+                    <h:inputText id="ueId" value="#{ueController.selected.ueId}" title="#{bundle.EditUeTitle_ueId}" required="true" requiredMessage="#{bundle.EditUeRequiredMessage_ueId}"/>
+                    <h:outputLabel value="#{bundle.EditUeLabel_code}" for="code" />
+                    <h:inputText id="code" value="#{ueController.selected.code}" title="#{bundle.EditUeTitle_code}" />
+                    <h:outputLabel value="#{bundle.EditUeLabel_description}" for="description" />
+                    <h:inputText id="description" value="#{ueController.selected.description}" title="#{bundle.EditUeTitle_description}" />
+                    <h:outputLabel value="#{bundle.EditUeLabel_isDecisive}" for="isDecisive" />
+                    <h:inputText id="isDecisive" value="#{ueController.selected.isDecisive}" title="#{bundle.EditUeTitle_isDecisive}" />
+                    <h:outputLabel value="#{bundle.EditUeLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{ueController.selected.name}" title="#{bundle.EditUeTitle_name}" />
+                    <h:outputLabel value="#{bundle.EditUeLabel_numOfPeriods}" for="numOfPeriods" />
+                    <h:inputText id="numOfPeriods" value="#{ueController.selected.numOfPeriods}" title="#{bundle.EditUeTitle_numOfPeriods}" />
+                    <h:outputLabel value="#{bundle.EditUeLabel_sectionId}" for="sectionId" />
+                    <h:selectOneMenu id="sectionId" value="#{ueController.selected.sectionId}" title="#{bundle.EditUeTitle_sectionId}" >
+                        <f:selectItems value="#{sectionController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{ueController.update}" value="#{bundle.EditUeSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditUeViewLink}"/>
+                <br />
+                <h:commandLink action="#{ueController.prepareList}" value="#{bundle.EditUeShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditUeIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

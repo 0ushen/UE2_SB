@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditCapacityTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditCapacityLabel_capacityId}" for="capacityId" />
+                    <h:inputText id="capacityId" value="#{capacityController.selected.capacityId}" title="#{bundle.EditCapacityTitle_capacityId}" required="true" requiredMessage="#{bundle.EditCapacityRequiredMessage_capacityId}"/>
+                    <h:outputLabel value="#{bundle.EditCapacityLabel_description}" for="description" />
+                    <h:inputText id="description" value="#{capacityController.selected.description}" title="#{bundle.EditCapacityTitle_description}" />
+                    <h:outputLabel value="#{bundle.EditCapacityLabel_isThresholdOfSuccess}" for="isThresholdOfSuccess" />
+                    <h:inputText id="isThresholdOfSuccess" value="#{capacityController.selected.isThresholdOfSuccess}" title="#{bundle.EditCapacityTitle_isThresholdOfSuccess}" />
+                    <h:outputLabel value="#{bundle.EditCapacityLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{capacityController.selected.name}" title="#{bundle.EditCapacityTitle_name}" />
+                    <h:outputLabel value="#{bundle.EditCapacityLabel_ueId}" for="ueId" />
+                    <h:selectOneMenu id="ueId" value="#{capacityController.selected.ueId}" title="#{bundle.EditCapacityTitle_ueId}" >
+                        <f:selectItems value="#{ueController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{capacityController.update}" value="#{bundle.EditCapacitySaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditCapacityViewLink}"/>
+                <br />
+                <h:commandLink action="#{capacityController.prepareList}" value="#{bundle.EditCapacityShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditCapacityIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

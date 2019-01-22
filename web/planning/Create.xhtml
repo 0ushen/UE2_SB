@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreatePlanningTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_planningId}" for="planningId" />
+                    <h:inputText id="planningId" value="#{planningController.selected.planningId}" title="#{bundle.CreatePlanningTitle_planningId}" required="true" requiredMessage="#{bundle.CreatePlanningRequiredMessage_planningId}"/>
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_room}" for="room" />
+                    <h:inputText id="room" value="#{planningController.selected.room}" title="#{bundle.CreatePlanningTitle_room}" />
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_seanceDate}" for="seanceDate" />
+                    <h:inputText id="seanceDate" value="#{planningController.selected.seanceDate}" title="#{bundle.CreatePlanningTitle_seanceDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_startHour}" for="startHour" />
+                    <h:inputText id="startHour" value="#{planningController.selected.startHour}" title="#{bundle.CreatePlanningTitle_startHour}" >
+                        <f:convertDateTime pattern="HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_organizedUeId}" for="organizedUeId" />
+                    <h:selectOneMenu id="organizedUeId" value="#{planningController.selected.organizedUeId}" title="#{bundle.CreatePlanningTitle_organizedUeId}" >
+                        <f:selectItems value="#{organizedUeController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreatePlanningLabel_personId}" for="personId" />
+                    <h:selectOneMenu id="personId" value="#{planningController.selected.personId}" title="#{bundle.CreatePlanningTitle_personId}" >
+                        <f:selectItems value="#{personController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{planningController.create}" value="#{bundle.CreatePlanningSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{planningController.prepareList}" value="#{bundle.CreatePlanningShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreatePlanningIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

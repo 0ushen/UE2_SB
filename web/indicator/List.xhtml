@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListIndicatorTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListIndicatorEmpty}" rendered="#{indicatorController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{indicatorController.items.rowCount > 0}">
+                    <h:outputText value="#{indicatorController.pagination.pageFirstItem + 1}..#{indicatorController.pagination.pageLastItem + 1}/#{indicatorController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{indicatorController.previous}" value="#{bundle.Previous} #{indicatorController.pagination.pageSize}" rendered="#{indicatorController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{indicatorController.next}" value="#{bundle.Next} #{indicatorController.pagination.pageSize}" rendered="#{indicatorController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{indicatorController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_indicatorId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.indicatorId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_description}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.description}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_isCriteria}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.isCriteria}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_maxPossible}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.maxPossible}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_capacityId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.capacityId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_parentIndicatorId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentIndicatorId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListIndicatorTitle_organizedUeId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.organizedUeId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{indicatorController.prepareView}" value="#{bundle.ListIndicatorViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{indicatorController.prepareEdit}" value="#{bundle.ListIndicatorEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{indicatorController.destroy}" value="#{bundle.ListIndicatorDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{indicatorController.prepareCreate}" value="#{bundle.ListIndicatorCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListIndicatorIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

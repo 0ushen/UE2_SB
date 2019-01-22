@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="title">Person</ui:define>
+        <ui:define name="h1title">Person</ui:define>
+
+        <ui:define name="inputs">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="lastName">firstname:</h:outputLabel>
+                <h:inputText id="firstName" value="#{personController.person.firstName}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="lastName">lastname:</h:outputLabel>
+                <h:inputText id="lastName" value="#{personController.person.lastName}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="country">country:</h:outputLabel>
+                <h:inputText id="country" value="#{personController.person.country}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="city">city:</h:outputLabel>
+                <h:inputText id="city" value="#{personController.person.city}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="postalCode">postal code:</h:outputLabel>
+                <h:inputText id="postalCode" value="#{personController.person.postalCode}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="address">address:</h:outputLabel>
+                <h:inputText id="address" value="#{personController.person.address}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="dateOfBirth">date of birth:</h:outputLabel>
+                <h:inputText value="#{personController.person.dateOfBirth}" id="dateOfBirth" styleClass="form-control">  
+                    <f:convertDateTime pattern="dd-MM-yyyy"/>  
+                </h:inputText>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="email">email:</h:outputLabel>
+                <h:inputText id="email" value="#{personController.person.email}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="mobile">mobile:</h:outputLabel>
+                <h:inputText id="mobile" value="#{personController.person.mobile}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
+                <h:outputLabel for="isTeacher">teacher:</h:outputLabel>
+                <h:selectOneRadio id="isTeacher" value="#{personController.person.isTeacher}" class="col-lg-12 text-center labelCheckboxMargin">
+                    <div class="col-lg-6">
+                        <f:selectItem itemValue="true" itemLabel="yes" />
+                    </div>
+                    <div class="col-lg-6">
+                        <f:selectItem itemValue="false" itemLabel="no" />
+                    </div>
+                </h:selectOneRadio>
+            </div>
+        </ui:define>
+
+        <ui:define name="buttons">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
+                <h:commandButton value="Add" class="btn btn-primary btn-block" id="btnAdd">
+                    <f:ajax event="click" execute="@form" listener="#{personController.create()}" render="results" />
+                </h:commandButton>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
+                <h:commandButton value="List all" class="btn btn-primary btn-block" id="btnListAll">
+                    <f:ajax event="click" listener="#{personController.listAll()}" render="results" />
+                </h:commandButton>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
+                <h:commandButton value="Search" class="btn btn-primary btn-block" id="btnSearch">
+                    <f:ajax event="click" execute="@form" listener="#{personController.search()}" render="results" />
+                </h:commandButton>
+            </div>
+        </ui:define>
+
+        <ui:define name="dataTable">
+            <h:dataTable    value="#{personController.personList}" 
+                            var="pc" border="1" 
+                            class="table table-striped table-bordered table-hover table-fixed"
+                            id="results"
+                            binding="#{personController.dataTablePerson}">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Details"/>
+                    </f:facet>
+                    <h:commandButton value="details" class="btn btn-primary btn-block btnDetails" onclick="openDetailsBox();">
+                        <f:ajax event="click" listener="#{personController.renderDetailsBox()}" render="update"/>
+                    </h:commandButton>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Firstname"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.firstName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Lastname"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.lastName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Country"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.country}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="City"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.city}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Postal code"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.postalCode}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Address"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.address}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Date of birth"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.dateOfBirth}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.email}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Mobile"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.mobile}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Teacher"/>
+                    </f:facet>
+                    <h:outputText value="#{pc.isTeacher}"/>
+                </h:column>
+            </h:dataTable>
+        </ui:define>
+
+        <ui:define name="inputs-d">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="lastName-d">firstname:</h:outputLabel>
+                <h:inputText id="firstName-d" value="#{personController.personToEdit.firstName}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="lastName-d">lastname:</h:outputLabel>
+                <h:inputText id="lastName-d" value="#{personController.personToEdit.lastName}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="country-d">country:</h:outputLabel>
+                <h:inputText id="country-d" value="#{personController.personToEdit.country}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="city-d">city:</h:outputLabel>
+                <h:inputText id="city-d" value="#{personController.personToEdit.city}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="postalCode-d">postal code:</h:outputLabel>
+                <h:inputText id="postalCode-d" value="#{personController.personToEdit.postalCode}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="address-d">address:</h:outputLabel>
+                <h:inputText id="address-d" value="#{personController.personToEdit.address}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="dateOfBirth-d">date of birth:</h:outputLabel>
+                <h:inputText id="dateOfBirth-d" value="#{personController.personToEdit.dateOfBirth}" styleClass="form-control">
+                    <f:convertDateTime pattern="dd-MM-yyyy"/>  
+                </h:inputText>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="email-d">email:</h:outputLabel>
+                <h:inputText id="email-d" value="#{personController.personToEdit.email}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="mobile-d">mobile:</h:outputLabel>
+                <h:inputText id="mobile-d" value="#{personController.personToEdit.mobile}" styleClass="form-control"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
+                <h:outputLabel for="isTeacher-d">teacher:</h:outputLabel>
+                <h:selectOneRadio id="isTeacher-d" value="#{personController.personToEdit.isTeacher}" class="col-lg-12 text-center labelCheckboxMargin">
+                    <div class="col-xl-6">
+                        <f:selectItem itemValue="true" itemLabel="yes" />
+                    </div>
+                    <div class="col-xl-6">
+                        <f:selectItem itemValue="false" itemLabel="no" />
+                    </div>
+                </h:selectOneRadio>
+            </div>
+        </ui:define>
+
+        <ui:define name="buttons-d">
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
+                <h:commandButton value="Update" class="btn btn-primary btn-block" id="btnUpdate">
+                    <f:ajax event="click" execute="@form" listener="#{personController.update()}" render="results" />
+                </h:commandButton>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
+                <h:commandButton value="Delete" class="btn btn-primary btn-block" id="btnDelete" onclick="closeDetailsBox()">
+                    <f:ajax event="click" listener="#{personController.delete()}" render="results" />
+                </h:commandButton>
+            </div>
+        </ui:define>
+
+    </ui:composition>
+
+</html>

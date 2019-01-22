@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewSectionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewSectionLabel_sectionId}"/>
+                    <h:outputText value="#{sectionController.selected.sectionId}" title="#{bundle.ViewSectionTitle_sectionId}"/>
+                    <h:outputText value="#{bundle.ViewSectionLabel_description}"/>
+                    <h:outputText value="#{sectionController.selected.description}" title="#{bundle.ViewSectionTitle_description}"/>
+                    <h:outputText value="#{bundle.ViewSectionLabel_name}"/>
+                    <h:outputText value="#{sectionController.selected.name}" title="#{bundle.ViewSectionTitle_name}"/>
+                    <h:outputText value="#{bundle.ViewSectionLabel_personId}"/>
+                    <h:outputText value="#{sectionController.selected.personId}" title="#{bundle.ViewSectionTitle_personId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{sectionController.destroyAndView}" value="#{bundle.ViewSectionDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewSectionEditLink}"/>
+                <br />
+                <h:commandLink action="#{sectionController.prepareCreate}" value="#{bundle.ViewSectionCreateLink}" />
+                <br />
+                <h:commandLink action="#{sectionController.prepareList}" value="#{bundle.ViewSectionShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewSectionIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

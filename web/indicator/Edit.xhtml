@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditIndicatorTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_indicatorId}" for="indicatorId" />
+                    <h:inputText id="indicatorId" value="#{indicatorController.selected.indicatorId}" title="#{bundle.EditIndicatorTitle_indicatorId}" required="true" requiredMessage="#{bundle.EditIndicatorRequiredMessage_indicatorId}"/>
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_description}" for="description" />
+                    <h:inputText id="description" value="#{indicatorController.selected.description}" title="#{bundle.EditIndicatorTitle_description}" />
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_isCriteria}" for="isCriteria" />
+                    <h:inputText id="isCriteria" value="#{indicatorController.selected.isCriteria}" title="#{bundle.EditIndicatorTitle_isCriteria}" />
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_maxPossible}" for="maxPossible" />
+                    <h:inputText id="maxPossible" value="#{indicatorController.selected.maxPossible}" title="#{bundle.EditIndicatorTitle_maxPossible}" />
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{indicatorController.selected.name}" title="#{bundle.EditIndicatorTitle_name}" />
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_capacityId}" for="capacityId" />
+                    <h:selectOneMenu id="capacityId" value="#{indicatorController.selected.capacityId}" title="#{bundle.EditIndicatorTitle_capacityId}" >
+                        <f:selectItems value="#{capacityController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_parentIndicatorId}" for="parentIndicatorId" />
+                    <h:selectOneMenu id="parentIndicatorId" value="#{indicatorController.selected.parentIndicatorId}" title="#{bundle.EditIndicatorTitle_parentIndicatorId}" >
+                        <f:selectItems value="#{indicatorController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditIndicatorLabel_organizedUeId}" for="organizedUeId" />
+                    <h:selectOneMenu id="organizedUeId" value="#{indicatorController.selected.organizedUeId}" title="#{bundle.EditIndicatorTitle_organizedUeId}" >
+                        <f:selectItems value="#{organizedUeController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{indicatorController.update}" value="#{bundle.EditIndicatorSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditIndicatorViewLink}"/>
+                <br />
+                <h:commandLink action="#{indicatorController.prepareList}" value="#{bundle.EditIndicatorShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditIndicatorIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
