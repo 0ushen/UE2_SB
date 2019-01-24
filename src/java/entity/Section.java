@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -23,10 +18,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Laurence
- */
+
 @Entity
 @Table(name = "section")
 @XmlRootElement
@@ -34,7 +26,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Section.findAll", query = "SELECT s FROM Section s")
     , @NamedQuery(name = "Section.findBySectionId", query = "SELECT s FROM Section s WHERE s.sectionId = :sectionId")
     , @NamedQuery(name = "Section.findByDescription", query = "SELECT s FROM Section s WHERE s.description = :description")
-    , @NamedQuery(name = "Section.findByName", query = "SELECT s FROM Section s WHERE s.name = :name")})
+    , @NamedQuery(name = "Section.findByName", query = "SELECT s FROM Section s WHERE s.name = :name")
+    , @NamedQuery(name="Section.findByEntity",
+                query=  "SELECT s FROM Section s WHERE " + 
+                        "(:name IS NULL OR LOWER(s.name) LIKE LOWER(:name2)) AND " + 
+                        "(:description IS NULL OR LOWER(s.description) LIKE LOWER(:description2)) AND " + 
+                        "(:teacherId IS NULL OR s.teacher.personId = :teacherId)")
+})
 public class Section implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,15 +47,25 @@ public class Section implements Serializable {
     @Size(max = 255)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "sectionId")
+    @OneToMany(mappedBy = "section")
     private Collection<Ue> ueCollection;
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     @ManyToOne
-    private Person personId;
+    private Person teacher;
 
     public Section() {
     }
-
+    
+    public Section(Section section) {
+        
+        this.sectionId = section.sectionId;
+        this.description = section.description;
+        this.name = section.name;
+        this.ueCollection = section.ueCollection;
+        this.teacher = section.teacher;
+        
+    }
+    
     public Section(Integer sectionId) {
         this.sectionId = sectionId;
     }
@@ -95,12 +103,12 @@ public class Section implements Serializable {
         this.ueCollection = ueCollection;
     }
 
-    public Person getPersonId() {
-        return personId;
+    public Person getTeacher() {
+        return teacher;
     }
 
-    public void setPersonId(Person personId) {
-        this.personId = personId;
+    public void setTeacher(Person teacher) {
+        this.teacher = teacher;
     }
 
     @Override

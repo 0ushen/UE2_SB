@@ -59,7 +59,7 @@ public class Indicator implements Serializable {
     private Collection<Evaluation> evaluationCollection;
     @JoinColumn(name = "capacity_id", referencedColumnName = "capacity_id")
     @ManyToOne
-    private Capacity capacityId;
+    private Capacity capacity;
     @OneToMany(mappedBy = "parentIndicatorId")
     private Collection<Indicator> indicatorCollection;
     @JoinColumn(name = "parent_indicator_id", referencedColumnName = "indicator_id")
@@ -125,12 +125,12 @@ public class Indicator implements Serializable {
         this.evaluationCollection = evaluationCollection;
     }
 
-    public Capacity getCapacityId() {
-        return capacityId;
+    public Capacity getCapacity() {
+        return capacity;
     }
 
-    public void setCapacityId(Capacity capacityId) {
-        this.capacityId = capacityId;
+    public void setCapacity(Capacity capacity) {
+        this.capacity = capacity;
     }
 
     @XmlTransient

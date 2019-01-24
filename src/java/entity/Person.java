@@ -48,8 +48,9 @@ import javax.xml.bind.annotation.XmlTransient;
                         + "(:address IS NULL OR LOWER(p.address) LIKE LOWER(:address2)) AND "
                         + "(CAST(:dateOfBirth AS DATE) IS NULL OR p.dateOfBirth = CAST(:dateOfBirth AS DATE)) AND "
                         + "(:email IS NULL OR LOWER(p.email) LIKE LOWER(:email2)) AND "
-                        + "(:isTeacher IS NULL OR p.isTeacher = :isTeacher) AND "
-                        + "(:mobile IS NULL OR p.mobile = :mobile)")})
+                        + "(CAST(:isTeacher AS BOOLEAN) IS NULL OR p.isTeacher = CAST(:isTeacher AS BOOLEAN)) AND "
+                        + "(:mobile IS NULL OR p.mobile = :mobile)")
+})
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -96,13 +97,35 @@ public class Person implements Serializable {
     private Collection<Planning> planningCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     private Collection<StudentOrganizedUe> studentOrganizedUeCollection;
-    @OneToMany(mappedBy = "personId")
+    @OneToMany(mappedBy = "teacher")
     private Collection<Section> sectionCollection;
     @OneToMany(mappedBy = "personId")
     private Collection<Presence> presenceCollection;
 
     public Person() {
     }
+
+    public Person(Person person) {
+        this.personId = person.personId;
+        this.address = person.address;
+        this.city = person.city;
+        this.country = person.country;
+        this.dateOfBirth = person.dateOfBirth;
+        this.email = person.email;
+        this.firstName = person.firstName;
+        this.isJuryMember = person.isJuryMember;
+        this.isTeacher = person.isTeacher;
+        this.lastName = person.lastName;
+        this.mobile = person.mobile;
+        this.postalCode = person.postalCode;
+        this.organizedUeCollection = person.organizedUeCollection;
+        this.planningCollection = person.planningCollection;
+        this.studentOrganizedUeCollection = person.studentOrganizedUeCollection;
+        this.sectionCollection = person.sectionCollection;
+        this.presenceCollection = person.presenceCollection;
+    }
+    
+    
 
     public Person(Integer personId) {
         this.personId = personId;

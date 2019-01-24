@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package business;
 
 import entity.Person;
@@ -13,10 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
-/**
- *
- * @author Laurence
- */
+
 @Stateless
 public class PersonFacade extends AbstractFacade<Person> {
 
@@ -50,6 +42,14 @@ public class PersonFacade extends AbstractFacade<Person> {
              .setParameter("mobile", person.getMobile());
         
         System.out.println("PersonFacade findByEntity en | query value : " + query);
+        
+        return query.getResultList();
+    }
+    
+    public List<Person> findByIsTeacher(boolean isTeacher) {
+        
+        Query query = em.createNamedQuery("Person.findByIsTeacher");
+        query.setParameter("isTeacher", isTeacher);
         
         return query.getResultList();
     }

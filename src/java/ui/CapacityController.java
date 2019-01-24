@@ -2,194 +2,120 @@ package ui;
 
 import entity.Capacity;
 import ui.util.JsfUtil;
-import ui.util.PaginationHelper;
 import business.CapacityFacade;
-
+import entity.Ue;
 import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 
 @Named("capacityController")
-@SessionScoped
+@ViewScoped
 public class CapacityController implements Serializable {
 
-    private Capacity current;
-    private DataModel items = null;
-    @EJB
-    private business.CapacityFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
+    @Inject
+    private CapacityFacade ejbFacade;
+    
+    private Capacity capacity = new Capacity();
+    private Capacity capacityToEdit = new Capacity();
+    private Capacity lastSearch;
+    private List<Capacity> capacityList = new ArrayList<>();
+    private HtmlDataTable dataTableCapacity;
+    private String lastCall;
 
     public CapacityController() {
     }
-
-    public Capacity getSelected() {
-        if (current == null) {
-            current = new Capacity();
-            selectedItemIndex = -1;
-        }
-        return current;
+    
+    public void listAll() {
+        
+        capacityList = ejbFacade.findAll();
+        lastCall = "listAll";
+        
     }
-
-    private CapacityFacade getFacade() {
-        return ejbFacade;
+    
+    public void search() {
+        
+        System.out.println("capacityController search() start | capacity value : " + capacity);
+        capacityList = ejbFacade.findByEntity(capacity);
+        lastCall = "search";
+        lastSearch = new Capacity(capacity);
+        System.out.println("capacityController search() end | capacity List : " + capacityList);
+        
     }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
-        }
-        return pagination;
+    
+    public void create() {
+        
+        ejbFacade.create(capacity);
+        capacity = new Capacity();
+        refresh();
+        
     }
-
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    
+    public void createFromUe(Ue ue) {
+        
+        capacity.setUe(ue);
+        ejbFacade.create(capacity);
+        capacity = new Capacity();
+        refresh();
+        
     }
-
-    public String prepareView() {
-        current = (Capacity) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    
+    public void update() {
+        
+        ejbFacade.edit(capacityToEdit);
+        refresh();
+        
     }
-
-    public String prepareCreate() {
-        current = new Capacity();
-        selectedItemIndex = -1;
-        return "Create";
+    
+    public void delete() {
+        
+        ejbFacade.remove(capacityToEdit);
+        refresh();
+        
     }
-
-    public String create() {
-        try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CapacityCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
+    
+    public void deleteCapacityFromUe() {
+        
+        Capacity capacityToDelete = (Capacity) dataTableCapacity.getRowData();
+        ejbFacade.remove(capacityToDelete);
+        
     }
-
-    public String prepareEdit() {
-        current = (Capacity) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
+    
+    public void renderDetailsBox() {
+        
+        capacityToEdit = (Capacity) dataTableCapacity.getRowData();
+        
     }
-
-    public String update() {
-        try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CapacityUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Capacity) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CapacityDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
-            }
-        }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
-    }
-
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
-        }
-        return items;
-    }
-
-    private void recreateModel() {
-        items = null;
-    }
-
-    private void recreatePagination() {
-        pagination = null;
-    }
-
-    public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
-    }
-
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    
+    private void refresh() {
+        
+        if("search".equals(lastCall))
+            capacityList = ejbFacade.findByEntity(lastSearch);
+        else if("listAll".equals(lastCall))
+            listAll();
+        
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }
 
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
+    public List<Capacity> getItemsAvailableSelectOne() {
+        return ejbFacade.findAll();
     }
 
-    public Capacity getCapacity(java.lang.Integer id) {
-        return ejbFacade.find(id);
+    public List<Capacity> getCapacityListForUe(Ue ue) {
+        
+        return ejbFacade.findByUe(ue);
     }
 
     @FacesConverter(forClass = Capacity.class)
@@ -202,7 +128,7 @@ public class CapacityController implements Serializable {
             }
             CapacityController controller = (CapacityController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "capacityController");
-            return controller.getCapacity(getKey(value));
+            return controller.ejbFacade.find(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -231,5 +157,68 @@ public class CapacityController implements Serializable {
         }
 
     }
+    
+    
+    // ======================================
+    // =          Getters & Setters         =
+    // ======================================
+
+    public CapacityFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(CapacityFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Capacity getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Capacity capacity) {
+        this.capacity = capacity;
+    }
+
+    public Capacity getCapacityToEdit() {
+        return capacityToEdit;
+    }
+
+    public void setCapacityToEdit(Capacity capacityToEdit) {
+        this.capacityToEdit = capacityToEdit;
+    }
+
+    public Capacity getLastSearch() {
+        return lastSearch;
+    }
+
+    public void setLastSearch(Capacity lastSearch) {
+        this.lastSearch = lastSearch;
+    }
+
+    public List<Capacity> getCapacityList() {
+        return capacityList;
+    }
+
+    public void setCapacityList(List<Capacity> capacityList) {
+        this.capacityList = capacityList;
+    }
+
+    public HtmlDataTable getDataTableCapacity() {
+        return dataTableCapacity;
+    }
+
+    public void setDataTableCapacity(HtmlDataTable dataTableCapacity) {
+        this.dataTableCapacity = dataTableCapacity;
+    }
+
+    public String getLastCall() {
+        return lastCall;
+    }
+
+    public void setLastCall(String lastCall) {
+        this.lastCall = lastCall;
+    }
+    
+    
 
 }

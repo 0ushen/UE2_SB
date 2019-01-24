@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:jsf="http://xmlns.jcp.org/jsf">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
     <ui:composition template="/template.xhtml">
@@ -53,12 +52,15 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 form-group">
                 <h:outputLabel for="isTeacher">teacher:</h:outputLabel>
-                <h:selectOneRadio id="isTeacher" value="#{personController.person.isTeacher}" class="col-lg-12 text-center labelCheckboxMargin">
+                <h:selectOneRadio id="isTeacher" valueChangeListener="#{personController.changeListenerIsTeacher}" class="col-lg-12 text-center labelCheckboxMargin">
                     <div class="col-lg-6">
                         <f:selectItem itemValue="true" itemLabel="yes" />
                     </div>
                     <div class="col-lg-6">
                         <f:selectItem itemValue="false" itemLabel="no" />
+                    </div>
+                    <div class="col-lg-6">
+                        <f:selectItem itemValue="null" itemLabel="any" />
                     </div>
                 </h:selectOneRadio>
             </div>
@@ -202,14 +204,7 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 form-group">
                 <h:outputLabel for="isTeacher-d">teacher:</h:outputLabel>
-                <h:selectOneRadio id="isTeacher-d" value="#{personController.personToEdit.isTeacher}" class="col-lg-12 text-center labelCheckboxMargin">
-                    <div class="col-xl-6">
-                        <f:selectItem itemValue="true" itemLabel="yes" />
-                    </div>
-                    <div class="col-xl-6">
-                        <f:selectItem itemValue="false" itemLabel="no" />
-                    </div>
-                </h:selectOneRadio>
+                <h:selectBooleanCheckbox id="isTeacher-d" value="#{personController.personToEdit.isTeacher}" styleClass="form-control"/>
             </div>
         </ui:define>
 

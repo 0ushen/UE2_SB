@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,10 +20,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Laurence
- */
+
 @Entity
 @Table(name = "ue")
 @XmlRootElement
@@ -37,7 +31,16 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Ue.findByDescription", query = "SELECT u FROM Ue u WHERE u.description = :description")
     , @NamedQuery(name = "Ue.findByIsDecisive", query = "SELECT u FROM Ue u WHERE u.isDecisive = :isDecisive")
     , @NamedQuery(name = "Ue.findByName", query = "SELECT u FROM Ue u WHERE u.name = :name")
-    , @NamedQuery(name = "Ue.findByNumOfPeriods", query = "SELECT u FROM Ue u WHERE u.numOfPeriods = :numOfPeriods")})
+    , @NamedQuery(name = "Ue.findByNumOfPeriods", query = "SELECT u FROM Ue u WHERE u.numOfPeriods = :numOfPeriods")
+    , @NamedQuery(name="UE.findByEntity",
+                query=  "SELECT u FROM Ue u WHERE " + 
+                        "(:name IS NULL OR u.name = :name) AND " +
+                        "(:description IS NULL OR u.description = :description) AND " + 
+                        "(CAST(:sectionId AS INTEGER) IS NULL OR u.section.sectionId = CAST(:sectionId AS INTEGER)) AND " + 
+                        "(:code IS NULL OR u.code = :code) AND " + 
+                        "(CAST(:numOfPeriods AS INTEGER) IS NULL OR u.numOfPeriods = CAST(:numOfPeriods AS INTEGER)) AND " + 
+                        "(CAST(:isDecisive AS BOOLEAN) IS NULL OR u.isDecisive = CAST(:isDecisive AS BOOLEAN))")
+})
 public class Ue implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,14 +64,30 @@ public class Ue implements Serializable {
     private Integer numOfPeriods;
     @JoinColumn(name = "section_id", referencedColumnName = "section_id")
     @ManyToOne
-    private Section sectionId;
+    private Section section;
     @OneToMany(mappedBy = "ueId")
     private Collection<OrganizedUe> organizedUeCollection;
-    @OneToMany(mappedBy = "ueId")
-    private Collection<Capacity> capacityCollection;
+    @OneToMany(mappedBy = "ue")
+    private List<Capacity> capacityList;
 
     public Ue() {
     }
+
+    public Ue(Ue ue) {
+        
+        this.ueId = ue.ueId;
+        this.code = ue.code;
+        this.description = ue.description;
+        this.isDecisive = ue.isDecisive;
+        this.name = ue.name;
+        this.numOfPeriods = ue.numOfPeriods;
+        this.section = ue.section;
+        this.organizedUeCollection = ue.organizedUeCollection;
+        this.capacityList = ue.capacityList;
+        
+    }
+    
+    
 
     public Ue(Integer ueId) {
         this.ueId = ueId;
@@ -102,8 +121,9 @@ public class Ue implements Serializable {
         return isDecisive;
     }
 
-    public void setIsDecisive(Boolean isDecisive) {
-        this.isDecisive = isDecisive;
+    public void setIsDecisive(Boolean isDecisivee) {
+        System.out.print(isDecisivee);
+        this.isDecisive = isDecisivee;
     }
 
     public String getName() {
@@ -122,12 +142,12 @@ public class Ue implements Serializable {
         this.numOfPeriods = numOfPeriods;
     }
 
-    public Section getSectionId() {
-        return sectionId;
+    public Section getSection() {
+        return section;
     }
 
-    public void setSectionId(Section sectionId) {
-        this.sectionId = sectionId;
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     @XmlTransient
@@ -140,12 +160,12 @@ public class Ue implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Capacity> getCapacityCollection() {
-        return capacityCollection;
+    public List<Capacity> getCapacityList() {
+        return capacityList;
     }
 
-    public void setCapacityCollection(Collection<Capacity> capacityCollection) {
-        this.capacityCollection = capacityCollection;
+    public void setCapacityList(List<Capacity> capacityList) {
+        this.capacityList = capacityList;
     }
 
     @Override

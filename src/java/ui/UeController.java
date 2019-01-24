@@ -1,183 +1,89 @@
 package ui;
 
+import business.UeFacade;
+import entity.Capacity;
 import entity.Ue;
 import ui.util.JsfUtil;
-import ui.util.PaginationHelper;
-import business.UeFacade;
-
 import java.io.Serializable;
-import java.util.ResourceBundle;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
 
 @Named("ueController")
-@SessionScoped
+@ViewScoped
 public class UeController implements Serializable {
 
-    private Ue current;
-    private DataModel items = null;
     @EJB
     private business.UeFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+    
+    private Ue ue = new Ue();
+    private Ue ueToEdit = new Ue();
+    private Ue lastSearch;
+    private List<Ue> ueList = new ArrayList<>();
+    private HtmlDataTable dataTableUe;
+    private String lastCall;
+    
     public UeController() {
     }
-
-    public Ue getSelected() {
-        if (current == null) {
-            current = new Ue();
-            selectedItemIndex = -1;
-        }
-        return current;
+    
+    public void create() {
+        
+        ejbFacade.create(ue);
+        ue = new Ue();
+        refresh();
+        
     }
-
-    private UeFacade getFacade() {
-        return ejbFacade;
+    
+    public void listAll() {
+        
+        ueList = ejbFacade.findAll();
+        lastCall = "listAll";
+        
     }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
-        }
-        return pagination;
+    
+    public void search() {
+        
+        ueList = ejbFacade.findByEntity(ue);
+        lastCall = "search";
+        lastSearch = new Ue(ue);
+        
     }
-
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    
+    public void renderDetailsBox() {
+        
+        ueToEdit = (Ue) dataTableUe.getRowData();
+        
     }
-
-    public String prepareView() {
-        current = (Ue) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    
+    public void update() {
+        
+        ejbFacade.edit(ueToEdit);
+        refresh();
     }
-
-    public String prepareCreate() {
-        current = new Ue();
-        selectedItemIndex = -1;
-        return "Create";
+    
+    public void delete() {
+        
+        ejbFacade.remove(ueToEdit);
+        refresh();
+        
     }
-
-    public String create() {
-        try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UeCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String prepareEdit() {
-        current = (Ue) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
-        try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UeUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Ue) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UeDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
-            }
-        }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
-    }
-
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
-        }
-        return items;
-    }
-
-    private void recreateModel() {
-        items = null;
-    }
-
-    private void recreatePagination() {
-        pagination = null;
-    }
-
-    public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
-    }
-
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    
+    private void refresh() {
+        
+        if("search".equals(lastCall))
+            ueList = ejbFacade.findByEntity(lastSearch);
+        else if("listAll".equals(lastCall))
+            listAll();
+        
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {
@@ -191,6 +97,19 @@ public class UeController implements Serializable {
     public Ue getUe(java.lang.Integer id) {
         return ejbFacade.find(id);
     }
+    
+    /* I had to get the isDecisive Boolean value with a changeListener because
+     * when i try to get it directly into the isDecisive property of ue, it
+     * automatically convert null to false somehow .*/
+    public void changeListenerIsDecisive(ValueChangeEvent event) {
+        
+        if("true".equals(event.getNewValue()))
+            ue.setIsDecisive(Boolean.TRUE);
+        else if("false".equals(event.getNewValue()))
+            ue.setIsDecisive(Boolean.FALSE);
+        else if("null".equals(event.getNewValue()))
+            ue.setIsDecisive(null);
+    }
 
     @FacesConverter(forClass = Ue.class)
     public static class UeControllerConverter implements Converter {
@@ -202,7 +121,7 @@ public class UeController implements Serializable {
             }
             UeController controller = (UeController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "ueController");
-            return controller.getUe(getKey(value));
+            return controller.ejbFacade.find(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -231,5 +150,78 @@ public class UeController implements Serializable {
         }
 
     }
+    
+    // ======================================
+    // =          Getters & Setters         =
+    // ======================================
+
+    public UeFacade getUeFacade() {
+        return ejbFacade;
+    }
+
+    public void setUeFacade(UeFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+    
+    public Ue getUe() {
+        return ue;
+    }
+
+    public void setUe(Ue ue) {
+        this.ue = ue;
+    }
+
+    public Ue getUeToEdit() {
+        return ueToEdit;
+    }
+
+    public void setUeToEdit(Ue ueToEdit) {
+        this.ueToEdit = ueToEdit;
+    }
+
+    public List<Ue> getUeList() {
+        return ueList;
+    }
+
+    public void setUeList(List<Ue> ueList) {
+        this.ueList = ueList;
+    }
+    
+    public HtmlDataTable getDataTableUe() {
+        return dataTableUe;
+    }
+
+    public void setDataTableUe(HtmlDataTable dataTableUe) {
+        this.dataTableUe = dataTableUe;
+    }
+
+    public UeFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(UeFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Ue getLastSearch() {
+        return lastSearch;
+    }
+
+    public void setLastSearch(Ue lastSearch) {
+        this.lastSearch = lastSearch;
+    }
+
+    public String getLastCall() {
+        return lastCall;
+    }
+
+    public void setLastCall(String lastCall) {
+        this.lastCall = lastCall;
+    }
+    
+    
+    
+    
+
 
 }

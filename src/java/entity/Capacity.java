@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -23,10 +18,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Laurence
- */
+
 @Entity
 @Table(name = "capacity")
 @XmlRootElement
@@ -35,7 +27,15 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Capacity.findByCapacityId", query = "SELECT c FROM Capacity c WHERE c.capacityId = :capacityId")
     , @NamedQuery(name = "Capacity.findByDescription", query = "SELECT c FROM Capacity c WHERE c.description = :description")
     , @NamedQuery(name = "Capacity.findByIsThresholdOfSuccess", query = "SELECT c FROM Capacity c WHERE c.isThresholdOfSuccess = :isThresholdOfSuccess")
-    , @NamedQuery(name = "Capacity.findByName", query = "SELECT c FROM Capacity c WHERE c.name = :name")})
+    , @NamedQuery(name = "Capacity.findByName", query = "SELECT c FROM Capacity c WHERE c.name = :name")
+    , @NamedQuery(name = "Capacity.findByUe", query = "SELECT c FROM Capacity c WHERE c.ue.ueId = :ueId")
+    , @NamedQuery(name="Capacity.findByEntity",
+                query=  "SELECT c FROM Capacity c WHERE " + 
+                        "(:name IS NULL OR c.name = :name) AND " +
+                        "(:description IS NULL OR c.description = :description) AND " + 
+                        "(:ueId IS NULL OR c.ue.ueId = :ueId) AND " + 
+                        "(:isThresholdOfSuccess IS NULL OR c.isThresholdOfSuccess = :isThresholdOfSuccess)")
+})
 public class Capacity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,14 +52,27 @@ public class Capacity implements Serializable {
     @Size(max = 255)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "capacityId")
+    @OneToMany(mappedBy = "capacity")
     private Collection<Indicator> indicatorCollection;
     @JoinColumn(name = "ue_id", referencedColumnName = "ue_id")
     @ManyToOne
-    private Ue ueId;
+    private Ue ue;
 
     public Capacity() {
     }
+
+    public Capacity(Capacity capacity) {
+        
+        this.capacityId = capacity.capacityId;
+        this.description = capacity.description;
+        this.isThresholdOfSuccess = capacity.isThresholdOfSuccess;
+        this.name = capacity.name;
+        this.indicatorCollection = capacity.indicatorCollection;
+        this.ue = capacity.ue;
+        
+    }
+    
+    
 
     public Capacity(Integer capacityId) {
         this.capacityId = capacityId;
@@ -106,12 +119,12 @@ public class Capacity implements Serializable {
         this.indicatorCollection = indicatorCollection;
     }
 
-    public Ue getUeId() {
-        return ueId;
+    public Ue getUe() {
+        return ue;
     }
 
-    public void setUeId(Ue ueId) {
-        this.ueId = ueId;
+    public void setUe(Ue ue) {
+        this.ue = ue;
     }
 
     @Override

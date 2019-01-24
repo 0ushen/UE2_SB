@@ -10,9 +10,12 @@ import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import ui.util.JsfUtil;
 
 
 @Named
@@ -24,6 +27,7 @@ public class PersonController implements Serializable {
     
     private Person person = new Person();
     private Person personToEdit = new Person();
+    private Person lastSearch;
     private List<Person> personList = new ArrayList<>();
     private HtmlDataTable dataTablePerson;
     private String lastCall;
@@ -41,6 +45,7 @@ public class PersonController implements Serializable {
         System.out.println("personController search() start | person value : " + person);
         personList = ejbFacade.findByEntity(person);
         lastCall = "search";
+        lastSearch = new Person(person);
         System.out.println("personController search() end | person List : " + personList);
         
     }
@@ -77,10 +82,35 @@ public class PersonController implements Serializable {
     private void refresh() {
         
         if("search".equals(lastCall))
-            search();
+            personList = ejbFacade.findByEntity(lastSearch);
         else if("listAll".equals(lastCall))
             listAll();
         
+    }
+    
+    public SelectItem[] getItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
+    }
+
+    public List<Person> getItemsAvailableSelectOne() {
+        return ejbFacade.findAll();
+    }
+    
+    public List<Person> getItemsAvailableSelectOneTeacher() {
+        return ejbFacade.findByIsTeacher(true);
+    }
+    
+    /* I had to get the isDecisive Boolean value with a changeListener because
+     * when i try to get it directly into the isDecisive property of ue, it
+     * automatically convert null to false somehow .*/
+    public void changeListenerIsTeacher(ValueChangeEvent event) {
+        
+        if("true".equals(event.getNewValue()))
+            person.setIsTeacher(Boolean.TRUE);
+        else if("false".equals(event.getNewValue()))
+            person.setIsTeacher(Boolean.FALSE);
+        else if("null".equals(event.getNewValue()))
+            person.setIsTeacher(null);
     }
     
     @FacesConverter(forClass = Person.class)
@@ -170,5 +200,6 @@ public class PersonController implements Serializable {
     public void setDataTablePerson(HtmlDataTable dataTablePerson) {
         this.dataTablePerson = dataTablePerson;
     }
+    
 
 }

@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" http-equiv="X-UA-Conpatible" />
@@ -11,7 +12,9 @@
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
         <h:outputStylesheet name="css/style.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script>
+        <h:outputScript library="javax.faces" name="jsf.js" target="body"/>
         <title><ui:insert name="title">Title</ui:insert></title>
     </h:head>
 
@@ -20,6 +23,25 @@
         <div class="container">
             
             <script type="text/javascript" >
+                
+                $( document ).ready(function() {
+                    
+                    $("#content tr").addClass("d-flex");
+                    console.log( "ready!" );
+                    
+                });
+                
+                function initPopovers(data) {
+                    console.log(data.status); //while ,data.status can be 1)"begin" 2)"complete" 3)"success"
+                    if (data.status === 'begin') {}
+                    if (data.status === 'complete') {}
+                    if (data.status === 'success') {
+                        $('[data-toggle="popover"]').popover();
+                        $("[data-toggle='tooltip']").tooltip();
+                        $("table tr").addClass("d-flex");
+                        console.log('Popovers initialized!');
+                    }
+                }
                 
                 function openDetailsBox() {
                     $('#results-box').removeClass('col-xl-12');
@@ -100,7 +122,7 @@
                 </div>
             </h:form>
             
-            <div class="row my-5 roundborder">
+            <div class="row my-5 roundborder" id="content">
                 <div class="col-xl-12" id="results-box">
                     <div class="row my-2">
                         <div id="member" class="col-xl-12 table-responsive">
@@ -129,10 +151,15 @@
                     <button type="button" class="close" aria-label="Close" id="closeCapacityButton" onclick="closeCapacityBox()">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h:form class="row" id="capacities">
-                        <div class="col-xl-12" id="capacityTable">
+                    <h:form class="row fom-group-sm" id="capacities">
+                        <div class="col-xl-12 table-responsive" id="capacityTable">
                             <div class="row">
                                 <ui:insert name="capacityTable">Capacity table</ui:insert>
+                            </div>
+                        </div>
+                        <div class="col-xl-12" id="capacityInputs">
+                            <div class="row">
+                                <ui:insert name="capacityInputs">Capacity buttons</ui:insert>
                             </div>
                         </div>
                         <div class="col-xl-12" id="capacityButtons">

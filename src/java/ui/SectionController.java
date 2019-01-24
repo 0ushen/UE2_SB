@@ -2,207 +2,114 @@ package ui;
 
 import entity.Section;
 import ui.util.JsfUtil;
-import ui.util.PaginationHelper;
 import business.SectionFacade;
-
 import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 
 @Named("sectionController")
-@SessionScoped
+@ViewScoped
 public class SectionController implements Serializable {
-
-    private Section current;
-    private DataModel items = null;
-    @EJB
-    private business.SectionFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
-    public SectionController() {
+    
+    @Inject
+    private SectionFacade ejbFacade;
+    
+    private Section section = new Section();
+    private Section sectionToEdit = new Section();
+    private Section lastSearch;
+    private List<Section> sectionList = new ArrayList<>();
+    private HtmlDataTable dataTableSection;
+    private String lastCall;
+    
+    
+    public void listAll() {
+        
+        sectionList = ejbFacade.findAll();
+        lastCall = "listAll";
+        
     }
-
-    public Section getSelected() {
-        if (current == null) {
-            current = new Section();
-            selectedItemIndex = -1;
-        }
-        return current;
+    
+    public void search() {
+        
+        System.out.println("sectionController search() start | person List : " + 
+                sectionList);
+        sectionList = ejbFacade.findByEntity(section);
+        lastCall = "search";
+        lastSearch = new Section(section);
+        System.out.println("sectionController search() end | person List : " + 
+                sectionList);
+        
     }
-
-    private SectionFacade getFacade() {
-        return ejbFacade;
+    
+    public void create() {
+        
+        ejbFacade.create(section);
+        section = new Section();
+        refresh();
+        
     }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
-        }
-        return pagination;
+    
+    public void update() {
+        
+        ejbFacade.edit(sectionToEdit);
+        refresh();
     }
-
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    
+    public void delete() {
+        
+        ejbFacade.remove(sectionToEdit);
+        refresh();
+        
     }
-
-    public String prepareView() {
-        current = (Section) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    
+    private void refresh() {
+        
+        if("search".equals(lastCall))
+            sectionList = ejbFacade.findByEntity(lastSearch);
+        else if("listAll".equals(lastCall))
+            listAll();
+        
     }
-
-    public String prepareCreate() {
-        current = new Section();
-        selectedItemIndex = -1;
-        return "Create";
+    
+    public void renderDetailsBox() {
+        
+        sectionToEdit = (Section) dataTableSection.getRowData();
+        
     }
-
-    public String create() {
-        try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SectionCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String prepareEdit() {
-        current = (Section) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
-        try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SectionUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Section) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SectionDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
-            }
-        }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
-    }
-
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
-        }
-        return items;
-    }
-
-    private void recreateModel() {
-        items = null;
-    }
-
-    private void recreatePagination() {
-        pagination = null;
-    }
-
-    public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
-    }
-
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
-    }
-
+    
     public SelectItem[] getItemsAvailableSelectMany() {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
     }
 
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
+    public List<Section> getItemsAvailableSelectOne() {
+        return ejbFacade.findAll();
     }
 
-    public Section getSection(java.lang.Integer id) {
-        return ejbFacade.find(id);
-    }
 
     @FacesConverter(forClass = Section.class)
     public static class SectionControllerConverter implements Converter {
 
         @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+        public Object getAsObject(FacesContext facesContext,
+                UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            SectionController controller = (SectionController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "sectionController");
-            return controller.getSection(getKey(value));
+            SectionController controller = 
+                    (SectionController) facesContext.getApplication().
+                    getELResolver().getValue(facesContext.getELContext(),
+                    null, "sectionController");
+            
+            return controller.ejbFacade.find(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -218,7 +125,8 @@ public class SectionController implements Serializable {
         }
 
         @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+        public String getAsString(FacesContext facesContext,
+                UIComponent component, Object object) {
             if (object == null) {
                 return null;
             }
@@ -226,10 +134,68 @@ public class SectionController implements Serializable {
                 Section o = (Section) object;
                 return getStringKey(o.getSectionId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Section.class.getName());
+                throw new IllegalArgumentException("object " 
+                        + object + " is of type " + object.getClass().getName() 
+                        + "; expected type: " + Section.class.getName());
             }
         }
 
     }
+    
+    
+       
+    // ======================================
+    // =          Getters & Setters         =
+    // ======================================
+    
+
+    public SectionFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(SectionFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    public Section getSectionToEdit() {
+        return sectionToEdit;
+    }
+
+    public void setSectionToEdit(Section sectionToEdit) {
+        this.sectionToEdit = sectionToEdit;
+    }
+
+    public List<Section> getSectionList() {
+        return sectionList;
+    }
+
+    public void setSectionList(List<Section> sectionList) {
+        this.sectionList = sectionList;
+    }
+
+    public HtmlDataTable getDataTableSection() {
+        return dataTableSection;
+    }
+
+    public void setDataTableSection(HtmlDataTable dataTableSection) {
+        this.dataTableSection = dataTableSection;
+    }
+
+    public String getLastCall() {
+        return lastCall;
+    }
+
+    public void setLastCall(String lastCall) {
+        this.lastCall = lastCall;
+    }
+    
 
 }

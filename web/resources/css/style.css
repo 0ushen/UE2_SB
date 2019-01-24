@@ -23,6 +23,13 @@
     height: 450px;
 }
 
+#capacityTable
+{
+    overflow: auto;
+    height: 315px;
+    margin: 8px 0px 8px;
+}
+
 .input-append .btn.dropdown-toggle {
     float: none;
 }
@@ -45,5 +52,24 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+#btnShowCapacities {
+    margin-top: 32px;
+}
+
+.longText {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ueDescriptionColumn {
+    width: 200px;
+}
+
+.sectionDescriptionColumn {
+    width: 500px;
 }
 

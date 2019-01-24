@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:composition template="./template.xhtml">
 
@@ -21,9 +22,9 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 form-group">
                 <h:outputLabel for="teacherLastName">Teacher name</h:outputLabel>
-                <h:selectOneMenu class="form-control" value="#{sectionController.teacherId}" id="teacherLastName">
-                    <f:selectItem itemValue="#{null}" itemLabel="--select--" />
-                    <f:selectItems value="#{sectionController.teacherList}" var="teacher" itemValue="#{teacher.id}" itemLabel="#{teacher.lastName}"/>
+                <h:selectOneMenu class="form-control" value="#{sectionController.section.teacher}" id="teacherLastName" converter="#{PersonControllerConverter}">
+                    <f:selectItem value="#{null}" itemLabel="--nothing selected--"/>
+                    <f:selectItems value="#{personController.itemsAvailableSelectOneTeacher}" var="teacher" itemLabel="#{teacher.lastName}"/>
                 </h:selectOneMenu>
             </div>
         </ui:define>
@@ -31,17 +32,17 @@
         <ui:define name="buttons">
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
                 <h:commandButton value="Add" class="btn btn-primary btn-block" id="btnAdd">
-                    <f:ajax event="click" execute="@form" listener="#{sectionController.create()}" render="results" />
+                    <f:ajax event="click" execute="@form" listener="#{sectionController.create()}" render="results" onevent="initPopovers"/>
                 </h:commandButton>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
                 <h:commandButton value="List all" class="btn btn-primary btn-block" id="btnListAll">
-                    <f:ajax event="click" listener="#{sectionController.listAll()}" render="results" />
+                    <f:ajax event="click" listener="#{sectionController.listAll()}" render="results" onevent="initPopovers"/>
                 </h:commandButton>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 text-center form-group">
                 <h:commandButton value="Search" class="btn btn-primary btn-block" id="btnSearch">
-                    <f:ajax event="click" execute="@form" listener="#{sectionController.search()}" render="results" />
+                    <f:ajax event="click" execute="@form" listener="#{sectionController.search()}" render="results" onevent="initPopovers"/>
                 </h:commandButton>
             </div>
         </ui:define>
@@ -71,7 +72,8 @@
                     <f:facet name="header">
                         <h:outputText value="Description"/>
                     </f:facet>
-                    <h:outputText class="wsnormal" value="#{sc.description}"/>
+                    <h:outputText class="longText sectionDescriptionColumn" a:data-toggle="popover" a:data-trigger="hover" title="Description of #{sc.name}" a:data-content="#{sc.description}" 
+                                      value="#{sc.description}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">
@@ -89,8 +91,9 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 form-group">
                 <h:outputLabel for="teacherLastName-d">Teacher</h:outputLabel>
-                <h:selectOneMenu class="form-control" value="#{sectionController.teacherIdToEdit}" id="teacherLastName-d">
-                    <f:selectItems value="#{sectionController.teacherList}" var="teacher" itemValue="#{teacher.id}" itemLabel="#{teacher.lastName}"/>
+                <h:selectOneMenu class="form-control" value="#{sectionController.sectionToEdit.teacher}" converter="#{PersonControllerConverter}" id="teacherLastName-d">
+                    <f:selectItem value="#{null}" itemLabel="--nothing selected--"/>
+                    <f:selectItems value="#{personController.itemsAvailableSelectOneTeacher}" var="teacher" itemLabel="#{teacher.lastName}"/>
                 </h:selectOneMenu>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group">
