@@ -14,6 +14,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -57,10 +58,14 @@ public class Capacity implements Serializable {
     @JoinColumn(name = "ue_id", referencedColumnName = "ue_id")
     @ManyToOne
     private Ue ue;
+    
+    @Transient
+    private boolean isEditable = false;
 
     public Capacity() {
     }
-
+    
+    // Constructor by copy
     public Capacity(Capacity capacity) {
         
         this.capacityId = capacity.capacityId;
@@ -70,6 +75,31 @@ public class Capacity implements Serializable {
         this.indicatorCollection = capacity.indicatorCollection;
         this.ue = capacity.ue;
         
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (capacityId != null ? capacityId.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Capacity)) {
+            return false;
+        }
+        Capacity other = (Capacity) object;
+        if ((this.capacityId == null && other.capacityId != null) || (this.capacityId != null && !this.capacityId.equals(other.capacityId))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entity.Capacity[ capacityId=" + capacityId + " ]";
     }
     
     
@@ -127,29 +157,14 @@ public class Capacity implements Serializable {
         this.ue = ue;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (capacityId != null ? capacityId.hashCode() : 0);
-        return hash;
+    public boolean getIsEditable() {
+        return isEditable;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Capacity)) {
-            return false;
-        }
-        Capacity other = (Capacity) object;
-        if ((this.capacityId == null && other.capacityId != null) || (this.capacityId != null && !this.capacityId.equals(other.capacityId))) {
-            return false;
-        }
-        return true;
+    public void setIsEditable(boolean editable) {
+        this.isEditable = editable;
     }
-
-    @Override
-    public String toString() {
-        return "entity.Capacity[ capacityId=" + capacityId + " ]";
-    }
+    
+    
     
 }

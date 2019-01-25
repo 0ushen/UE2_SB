@@ -7,7 +7,6 @@ import entity.Ue;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Named;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlDataTable;
@@ -88,6 +87,22 @@ public class CapacityController implements Serializable {
         Capacity capacityToDelete = (Capacity) dataTableCapacity.getRowData();
         ejbFacade.remove(capacityToDelete);
         
+    }
+    
+    public void saveAction() {
+	    
+        //get all existing value but set "editable" to false
+        capacityList.forEach((c) -> {
+            c.setIsEditable(false);
+        });
+        
+    }
+
+    public void editAction(Capacity c) {
+            
+            c.setIsEditable(true);
+            System.out.println(c + " is now editable in capacityTbale : " + c.getIsEditable());
+            
     }
     
     public void renderDetailsBox() {

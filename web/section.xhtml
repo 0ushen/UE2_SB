@@ -52,30 +52,31 @@
                          var="sc" border="1" 
                          class="table table-striped table-bordered table-hover table-fixed"
                          id="results"
-                         binding="#{sectionController.dataTableSection}">
-                <h:column>
+                         binding="#{sectionController.dataTableSection}"
+                         columnClasses="col-1,col-3,col-6,col-2">
+                <h:column headerClass="col-1">
                     <f:facet name="header">
                         <h:outputText value="Details"/>
                     </f:facet>
-
                     <h:commandButton value="details" class="btn btn-primary btn-block btnDetails" onclick="openDetailsBox();">
                         <f:ajax event="click" listener="#{sectionController.renderDetailsBox()}" render="update"/>
                     </h:commandButton>
                 </h:column>
-                <h:column>
+                <h:column headerClass="col-3">
                     <f:facet name="header">
                         <h:outputText value="Section"/>
                     </f:facet>
-                    <h:outputText value="#{sc.name}"/>
+                    <h:outputText class="longText sectionNameColumn" a:data-toggle="tooltip" a:data-trigger="hover" title="#{sc.name}" a:data-placement="right"
+                                  value="#{sc.name}" />
                 </h:column>
-                <h:column>
+                <h:column headerClass="col-6">
                     <f:facet name="header">
                         <h:outputText value="Description"/>
                     </f:facet>
                     <h:outputText class="longText sectionDescriptionColumn" a:data-toggle="popover" a:data-trigger="hover" title="Description of #{sc.name}" a:data-content="#{sc.description}" 
                                       value="#{sc.description}" />
                 </h:column>
-                <h:column>
+                <h:column headerClass="col-2">
                     <f:facet name="header">
                         <h:outputText value="Teacher"/>
                     </f:facet>

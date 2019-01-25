@@ -8,11 +8,6 @@
     display: none;
 }
 
-#results-box td
-{
-    white-space: nowrap;
-}
-
 .wsnormal {
     white-space: normal;
 }
@@ -65,11 +60,23 @@
   text-overflow: ellipsis;
 }
 
-.ueDescriptionColumn {
+.ueDescriptionColumn, ueNameColumn {
+    width: 200px;
+}
+
+.sectionNameColumnInUe {
+    width: 137px;
+}
+
+.sectionNameColumn {
     width: 200px;
 }
 
 .sectionDescriptionColumn {
-    width: 500px;
+    width: 320px;
+}
+
+.btnDetails {
+    font-size: smaller;
 }
 
