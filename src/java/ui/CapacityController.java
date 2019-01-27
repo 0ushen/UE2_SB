@@ -6,7 +6,9 @@ import business.CapacityFacade;
 import entity.Ue;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Named;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlDataTable;
@@ -30,6 +32,7 @@ public class CapacityController implements Serializable {
     private List<Capacity> capacityList = new ArrayList<>();
     private HtmlDataTable dataTableCapacity;
     private String lastCall;
+    private Map editableRows = new HashMap();
 
     public CapacityController() {
     }
@@ -90,24 +93,35 @@ public class CapacityController implements Serializable {
     }
     
     public void saveAction() {
-	    
-        //get all existing value but set "editable" to false
-        capacityList.forEach((c) -> {
-            c.setIsEditable(false);
-        });
+        
+	System.out.println("Editing capacity : " + capacityToEdit.getName() + " | " + capacityToEdit.getDescription());
+        ejbFacade.edit(capacityToEdit);
+        editableRows.clear();
+        System.out.println("All rows in dataTableCapacity are now not editable");
+        
+    }
+    
+    public void cancelAction() {
+        
+        editableRows.clear();
         
     }
 
-    public void editAction(Capacity c) {
+
+    public void editAction() {
             
-            c.setIsEditable(true);
-            System.out.println(c + " is now editable in capacityTbale : " + c.getIsEditable());
+        int rowIndex = dataTableCapacity.getRowIndex();
+        editableRows.clear();
+        editableRows.put(rowIndex, true);
+        capacityToEdit = (Capacity) dataTableCapacity.getRowData();
+        System.out.println("Row in editAction() : " + editableRows.get(rowIndex));
             
     }
     
     public void renderDetailsBox() {
         
         capacityToEdit = (Capacity) dataTableCapacity.getRowData();
+        editableRows.clear();
         
     }
     
@@ -233,6 +247,16 @@ public class CapacityController implements Serializable {
     public void setLastCall(String lastCall) {
         this.lastCall = lastCall;
     }
+
+    public Map getEditableRows() {
+        return editableRows;
+    }
+
+    public void setEditableRows(Map editableRows) {
+        this.editableRows = editableRows;
+    }
+    
+    
     
     
 

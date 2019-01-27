@@ -59,8 +59,6 @@ public class Capacity implements Serializable {
     @ManyToOne
     private Ue ue;
     
-    @Transient
-    private boolean isEditable = false;
 
     public Capacity() {
     }
@@ -155,14 +153,6 @@ public class Capacity implements Serializable {
 
     public void setUe(Ue ue) {
         this.ue = ue;
-    }
-
-    public boolean getIsEditable() {
-        return isEditable;
-    }
-
-    public void setIsEditable(boolean editable) {
-        this.isEditable = editable;
     }
     
     

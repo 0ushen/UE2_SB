@@ -88,8 +88,9 @@
                         <f:facet name="header">
                             <h:outputText value="Details"/>
                         </f:facet>
-                        <h:commandButton value="details" class="btn btn-primary btn-block btnDetails" onclick="openDetailsBox();">
-                            <f:ajax event="click" listener="#{ueController.renderDetailsBox()}" render="update capacities"/>
+                        <h:commandButton value="details" class="btn btn-primary btn-block btnDetails">
+                            <f:ajax event="click" listener="#{ueController.renderDetailsBox}" onevent="openDetailsBox" render="update"/>
+                            <f:ajax event="click" listener="#{capacityController.editableRows.clear()}" render="capacityForm"/>
                         </h:commandButton>
                     </h:column>
                     <h:column headerClass="col-3">
@@ -159,8 +160,8 @@
                     <h:selectBooleanCheckbox value="#{ueController.ueToEdit.isDecisive}" id="isDecisive-d" styleClass="form-control"/>
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-4 col-xl-4 text-center form-group" id="btnShowCapacities">
-                    <h:commandButton value="Show capacities" class="btn btn-primary btn-block" onclick="hideDetailsShowCapacities()">
-                        <f:ajax event="click"/>
+                    <h:commandButton value="Show capacities" class="btn btn-primary btn-block">
+                        <f:ajax event="click" onevent="hideDetailsShowCapacities" />
                     </h:commandButton>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 form-group">
@@ -172,12 +173,12 @@
             <ui:define name="buttons-d">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
                     <h:commandButton value="Update" class="btn btn-primary btn-block" id="btnUpdate">
-                        <f:ajax event="click" execute="name-d sectionName-d code-d numOfPeriods-d isDecisive-d description-d" listener="#{ueController.update()}" render="results" />
+                        <f:ajax event="click" execute="name-d sectionName-d code-d numOfPeriods-d isDecisive-d description-d" listener="#{ueController.update}" render="results" />
                     </h:commandButton>
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
-                    <h:commandButton value="Delete" class="btn btn-primary btn-block" id="btnDelete" onclick="closeDetailsBox()">
-                        <f:ajax event="click" listener="#{ueController.delete()}" render="results" />
+                    <h:commandButton value="Delete" class="btn btn-primary btn-block" id="btnDelete">
+                        <f:ajax event="click" listener="#{ueController.delete()}" onevent="closeDetailsBox" render="results" />
                     </h:commandButton>
                 </div>
             </ui:define>
@@ -187,46 +188,50 @@
                 <h:dataTable value="#{capacityController.getCapacityListForUe(ueController.ueToEdit)}"
                              var="cl" border="1" 
                              class="table table-striped table-bordered table-hover table-fixed table-sm"
-                             id="capacityResults"
-                             binding="#{capacityController.dataTableCapacity}">
-                    <h:column class="wsnormal">
+                             id="capacityTable"
+                             binding="#{capacityController.dataTableCapacity}"
+                             columnClasses="col-3,col-4,col-1,col-2,col-2">
+                    <h:column headerClass="col-3">
                         <f:facet name="header">
                             <h:outputText value="Name"/>
                         </f:facet>
-                        <h:inputText value="#{cl.name}" rendered="#{cl.isEditable}" />
-                        <h:outputText class="wsnormal" value="#{cl.name}" rendered="#{not cl.isEditable}" />
+                        <h:inputText class="form-control" value="#{capacityController.capacityToEdit.name}" rendered="#{capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" id="capacityNameEdit" />
+                        <h:outputText class="wsnormal" value="#{cl.name}" rendered="#{!capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" />
                     </h:column>
-                    <h:column>
+                    <h:column headerClass="col-4">
                         <f:facet name="header">
                             <h:outputText value="Description"/>
                         </f:facet>
-                        <h:inputText value="#{cl.description}" rendered="#{cl.isEditable}" />
-                        <h:outputText class="longText" value="#{cl.description}" rendered="#{not cl.isEditable}" />
+                        <h:inputText class="form-control" value="#{capacityController.capacityToEdit.description}" rendered="#{capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" id="capacityDescriptionEdit" />
+                        <h:outputText class="longText" value="#{cl.description}" rendered="#{!capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" />
                     </h:column>
-                    <h:column>
+                    <h:column headerClass="col-1">
                         <f:facet name="header">
                             <h:outputText value="ToF"/>
                         </f:facet>
-                        <h:selectBooleanCheckbox value="#{cl.isThresholdOfSuccess}" rendered="#{cl.isEditable}" />
-                        <h:outputText value="#{cl.isThresholdOfSuccess}" rendered="#{not cl.isEditable}" />
+                        <h:selectBooleanCheckbox class="form-control" value="#{capacityController.capacityToEdit.isThresholdOfSuccess}" rendered="#{capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" id="capacityIsThresholdOfSuccessEdit"/>
+                        <h:outputText value="#{cl.isThresholdOfSuccess}" rendered="#{!capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}" />
                     </h:column>
-                    <h:column>
+                    <h:column headerClass="col-2">
                         <f:facet name="header">
                             <h:outputText value="Edit"/>
                         </f:facet>
-                        <h:commandButton value="save" class="btn btn-primary btn-block" rendered="#{cl.isEditable}">
-                            <f:ajax event="click" listener="#{capacityController.saveAction}" render="capacities"/>
+                        <h:commandButton value="save" class="btn btn-primary btn-block btn-success" rendered="#{capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}">
+                            <f:ajax event="click" execute="@form" listener="#{capacityController.saveAction}" render="capacityForm"/>
                         </h:commandButton>
-                        <h:commandButton value="edit" class="btn btn-primary btn-block" rendered="#{not cl.isEditable}">
-                            <f:ajax event="click" listener="#{capacityController.editAction(cl)}" render="capacities"/>
+                        <h:commandButton value="cancel" class="btn btn-primary btn-block btn-warning" rendered="#{capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}">
+                            <f:ajax event="click" listener="#{capacityController.cancelAction}" render="capacityForm"/>
+                        </h:commandButton>
+                        <h:commandButton value="edit" class="btn btn-primary btn-block" rendered="#{!capacityController.editableRows.get(capacityController.dataTableCapacity.rowIndex)}">
+                            <f:ajax event="click" listener="#{capacityController.editAction}" render="capacityForm"/>
                         </h:commandButton>
                     </h:column>
-                    <h:column>
+                    <h:column headerClass="col-2">
                         <f:facet name="header">
                             <h:outputText value="Delete"/>
                         </f:facet>
                         <h:commandButton value="delete" class="btn btn-danger btn-block">
-                            <f:ajax event="click" listener="#{capacityController.deleteCapacityFromUe()}" render="capacities"/>
+                            <f:ajax event="click" listener="#{capacityController.deleteCapacityFromUe}" render="capacityForm"/>
                         </h:commandButton>
                     </h:column> 
                 </h:dataTable>
@@ -243,19 +248,19 @@
                 </div>
                 <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 form-group">
                     <h:outputLabel for="capacityIsThresholdOfSuccess">ToF</h:outputLabel>
-                    <h:selectBooleanCheckbox value="#{capacityController.capacity.isThresholdOfSuccess}" id="capacityIsThresholdOfSuccess" styleClass="form-control"/>
+                    <h:selectBooleanCheckbox id="capacityIsThresholdOfSuccess" value="#{capacityController.capacity.isThresholdOfSuccess}" styleClass="form-control"/>
                 </div>
             </ui:define>
             
             <ui:define name="capacityButtons">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
-                   <h:commandButton value="Hide capacities" class="btn btn-primary btn-block" id="btnHideCapacities" onclick="showDetailsHideCapacities()">
-                       <f:ajax event="click"/>
+                   <h:commandButton value="Hide capacities" class="btn btn-primary btn-block" id="btnHideCapacities">
+                       <f:ajax event="click" onevent="showDetailsHideCapacities"/>
                    </h:commandButton>
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center form-group">
                     <h:commandButton value="Add capacity" class="btn btn-primary btn-block" id="btnAddCapacity">
-                        <f:ajax event="click" execute="@form" listener="#{capacityController.createFromUe(ueController.ueToEdit)}" render="capacities"/>
+                        <f:ajax event="click" execute="capacityName capacityDescription capacityIsThresholdOfSuccess" listener="#{capacityController.createFromUe(ueController.ueToEdit)}" render="capacityForm"/>
                     </h:commandButton>
                 </div>
             </ui:define>

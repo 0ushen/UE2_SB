@@ -2,8 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <h:head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" http-equiv="X-UA-Conpatible" />
@@ -23,7 +22,7 @@
         <div class="container">
             
             <script type="text/javascript" >
-                
+                //<![CDATA[
                 $( document ).ready(function() {
                     
                     $("#content tr").addClass("d-flex");
@@ -46,14 +45,18 @@
                 function openDetailsBox() {
                     $('#results-box').removeClass('col-xl-12');
                     $('#results-box').addClass('col-xl-6');
-                    $('#capacity-box').removeClass('d-block');
-                    $('#capacity-box').addClass('d-none');
-                    $('#details-box').removeClass('d-none');
-                    $('#details-box').addClass('d-block');
-                    
-                    $([document.documentElement, document.body]).animate(
+                    if($('#capacity-box').hasClass('d-none') && $('#details-box').hasClass('d-none')) {
+                        $('#details-box').removeClass('d-none');
+                        $('#details-box').addClass('d-block');
+                        $([document.documentElement, document.body]).animate(
                                 {scrollTop: $("#details-box").offset().top}
                         , 200);
+                    }
+                    else if($('#capacity-box').hasClass('d-block')) {
+                        $([document.documentElement, document.body]).animate(
+                                {scrollTop: $("#capacity-box").offset().top}
+                        , 200);
+                    }
                 }
                 
                 function closeDetailsBox() {
@@ -61,6 +64,17 @@
                     $('#results-box').addClass('col-xl-12');
                     $('#details-box').removeClass('d-block');
                     $('#details-box').addClass('d-none');
+                    
+                    $([document.documentElement, document.body]).animate(
+                                {scrollTop: $("#results-box").offset().top}
+                        , 200);
+                }
+                
+                function closeCapacityBox() {
+                    $('#results-box').removeClass('col-xl-6');
+                    $('#results-box').addClass('col-xl-12');
+                    $('#capacity-box').removeClass('d-block');
+                    $('#capacity-box').addClass('d-none');
                     
                     $([document.documentElement, document.body]).animate(
                                 {scrollTop: $("#results-box").offset().top}
@@ -81,17 +95,7 @@
                     $('#capacity-box').addClass('d-none');
                 }
                 
-                function closeCapacityBox() {
-                    $('#results-box').removeClass('col-xl-6');
-                    $('#results-box').addClass('col-xl-12');
-                    $('#capacity-box').removeClass('d-block');
-                    $('#capacity-box').addClass('d-none');
-                    
-                    $([document.documentElement, document.body]).animate(
-                                {scrollTop: $("#results-box").offset().top}
-                        , 200);
-                }
-                
+                //]]>
             </script>
 
             <header class="header text-center">
@@ -151,8 +155,8 @@
                     <button type="button" class="close" aria-label="Close" id="closeCapacityButton" onclick="closeCapacityBox()">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h:form class="row fom-group-sm" id="capacities">
-                        <div class="col-xl-12 table-responsive" id="capacityTable">
+                    <h:form class="row fom-group-sm" id="capacityForm">
+                        <div class="col-xl-12 table-responsive" id="capacityTableWrap">
                             <div class="row">
                                 <ui:insert name="capacityTable">Capacity table</ui:insert>
                             </div>

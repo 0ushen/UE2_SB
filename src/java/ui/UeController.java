@@ -1,7 +1,6 @@
 package ui;
 
 import business.UeFacade;
-import entity.Capacity;
 import entity.Ue;
 import ui.util.JsfUtil;
 import java.io.Serializable;

@@ -18,7 +18,7 @@
     height: 450px;
 }
 
-#capacityTable
+#capacityTableWrap
 {
     overflow: auto;
     height: 315px;
@@ -61,19 +61,19 @@
 }
 
 .ueDescriptionColumn, ueNameColumn {
-    width: 200px;
+    width: 24ch;
 }
 
 .sectionNameColumnInUe {
-    width: 137px;
+    width: 16ch;
 }
 
 .sectionNameColumn {
-    width: 200px;
+    width: 22ch;
 }
 
 .sectionDescriptionColumn {
-    width: 320px;
+    width: 45ch;
 }
 
 .btnDetails {
