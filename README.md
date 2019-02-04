@@ -24,5 +24,3 @@ Database Management System using JSF and JPA
     <li>PostgreSQL as the database management system.</li>
     <li>Netbeans for the development environment.</li>
 </ul>
-</br>
-<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen="allowfullscreen" frameborder="0" style="width:640px; height:480px" src="https://www.lucidchart.com/documents/embeddedchart/2cfc2532-21a6-411e-a627-ff9eadccab6d" id="AdEO0NQ6Wb~Z"></iframe></div>
